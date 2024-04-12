@@ -1,0 +1,986 @@
+﻿@model IEnumerable<NCR>
+
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<div>
+    <h1>NCR</h1>
+
+    <nav class="main-nav ncr navbar-expand-sm navbar-toggleable-sm">
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <a class="nav-link" asp-area="" asp-controller="NCR" asp-action="Index" onclick="activateLink(this)">NCR log</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" asp-area="" asp-controller="NCR" asp-action="Analytics" onclick="activateLink(this)">Analytics</a>
+                <hr />
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" asp-area="" asp-controller="NCR" asp-action="Archived" onclick="activateLink(this)">Archived NCRs</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" asp-area="" asp-controller="NCR" asp-action="Archiving" onclick="activateLink(this)">Bulk Archiving</a>
+            </li>
+
+        </ul>
+        <hr />
+
+    </nav>
+    <div class="dropdown ncr-mobile-nav">
+        <button class="dropdown-toggle" type="button" id="dropdownMenu2" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="bi bi-list"></i>
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
+            <li><a class="nav-link" asp-area="" asp-controller="NCR" asp-action="Index" onclick="activateLink(this)">NCR log</a></li>
+            <li><a class="nav-link" asp-area="" asp-controller="NCR" asp-action="Analytics" onclick="activateLink(this)">Analytics</a></li>
+            <li><a class="nav-link" asp-area="" asp-controller="NCR" asp-action="Archived" onclick="activateLink(this)">Archived NCRs</a></li>
+            <li><a class="nav-link" asp-area="" asp-controller="NCR" asp-action="Archiving" onclick="activateLink(this)">Bulk Archiving</a></li>
+        </ul>
+        <h2>Analytics</h2>
+        <hr />
+    </div>
+</div>
+
+
+<div class="row dashboard-cards analytics">
+    <div class="col-md-12 stats-cards-dashboard">
+        <div class="row analytics">
+            <div class="col-md-6">
+                <div class="card" style="width: 100%;">
+                    <div class="card-body">
+                        <h5 class="card-title">NCRs in <b>Quality Rep.</b></h5>
+                        <p class="card-text">@ViewBag.QualityRepresentativeCount</p>
+                    </div>
+                </div>
+                <div class="card" style="width: 100%;">
+                    <div class="card-body">
+                        <h5 class="card-title">NCRs in <b>Engineering</b></h5>
+                        <p class="card-text">@ViewBag.EngineeringCount</p>
+                    </div>
+                </div>
+                <div class="card" style="width: 100%;">
+                    <div class="card-body">
+                        <h5 class="card-title">NCRs in <b>Operations</b></h5>
+                        <p class="card-text">@ViewBag.OperationsCount</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card" style="width: 100%;">
+                    <div class="card-body">
+                        <h5 class="card-title">NCRs in <b>Procurement</b></h5>
+                        <p class="card-text">@ViewBag.ProcurementCount</p>
+                    </div>
+                </div>
+                <div class="card" style="width: 100%;">
+                    <div class="card-body">
+                        <h5 class="card-title">NCRs in <b>Reinspection</b></h5>
+                        <p class="card-text">@ViewBag.ReinspectionCount</p>
+                    </div>
+                </div>
+                <div class="card" style="width: 100%;">
+                    <div class="card-body">
+                        <h5 class="card-title">Active NCRs</h5>
+                        <p class="card-text">@ViewBag.ncrCount</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row graphs-charts">
+    <div class="col-lg-7">
+        <div class="card standard-card chart">
+            <div class="card-body">
+                <div class="standard-card-header">
+                    <div>
+                        <h5 class="card-title">Parts</h5>
+                        <i class="bi bi-info-circle-fill" data-tooltip="This chart illustrates the total number of defective parts along with the Period-over-Period (PoP) change for the selected part."></i>
+                    </div>
+                    <div>
+                        <div class="form-group col-md-5">
+                            @{
+                                List<string> items = ViewData["Items"] as List<string>;
+
+                                            @Html.DropDownList("period", new SelectList(items), htmlAttributes: new { @class = "form-select", onchange = "loadPartsChart()" })
+                            }
+                        </div>
+                        <div class="form-group col-md-7">
+                            <span class="position-absolute">
+                                <i class="bi bi-search"></i>
+                            </span>
+                            <input name="partSelected" class="form-control" list="datalistOptions" id="exampleDataList" placeholder="Type to search..." oninput="loadPartsChart()">
+                            <datalist id="datalistOptions">
+                                @foreach (var part in ViewBag.Parts)
+                                {
+                                    <option value="@part.PartSummary"></option>
+                                }
+                            </datalist>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="EnoughData">
+                    <h6 id="Status">---</h6>
+                    <h2><span id="partsDefectiveAmount">--</span><span id="ChangeBadge" class="badge"><span id="periodChange">--</span><i class="bi bi-triangle-fill"></i></span></h2>
+                    <div class="chart-container">
+                        <canvas id="myChart"></canvas>
+                    </div>
+                </div>
+                <div id="NotEnoughData">
+                    <div class="chart-container">
+                        <h1 class="notEnoughDataText">Not enough data</h1>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-5">
+        <div class="card standard-card list">
+            <div id="EnoughDataPartsList" class="card-body">
+                <div class="standard-card-header">
+                    <div>
+                        <h5 class="card-title">Parts list</h5>
+                        <i class="bi bi-info-circle-fill" data-tooltip="This list provides a ranking of the most defective parts, accompanied by their total count and the Period-over-Period (PoP) change ."></i>
+                    </div>
+                    <div>
+                        <div class="form-group col-md-12">
+                            @{
+                                            @Html.DropDownList("PartsListPeriod", new SelectList(items), htmlAttributes: new { @class = "form-select", onchange = "loadPartsList()" })
+                            }
+                        </div>
+                    </div>
+                </div>
+
+                <div class="table-container">
+                    <table class="table table-borderless">
+                        <thead>
+                            <tr>
+                                <th>
+                                    PART NO.
+                                </th>
+                                <th>
+                                    <input name="actionButton" value="TOTAL" onclick="sortPartsList()" readonly />
+                                    <i class="bi bi-arrow-down-up"></i>
+                                </th>
+                                <th>
+                                    CHANGE
+                                </th>
+                            </tr>
+                        </thead>
+
+                        <tbody class="ncr-list-row parts-defective-list">
+                            <tr class="grey-rows">
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="navigator" id="navigator-PartsList">
+                    <ul class="pagination">
+                        <li class="btn btn-primary previous" onclick="changePage('previous')">Previous</li>
+                        <li class="btn btn-primary page-counter-parts">1 of 3</li>
+                        <li class="btn btn-primary next" onclick="changePage('next')">Next</li>
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+    
+</div>
+
+<div class="col-lg-12">
+    <div class="card standard-card list">
+        <div id="EnoughDataNCRT" class="card-body">
+            <div class="standard-card-header">
+                <div>
+                    <h5 class="card-title">NCR time tracker </h5>
+                    <i class="bi bi-info-circle-fill" data-tooltip="This list provides a comprehensive overview of NCRs, detailing the days elapsed since their inception or since their most recent accomplishment."></i>
+                </div>
+@*                 <div>
+                    <div class="form-group col-md-12">
+                    </div>
+                </div> *@
+            </div>
+
+            <div class="table-container">
+                <table class="table table-borderless">
+                    <thead>
+                        <tr>
+                            <th>
+                                NCR NO.
+                            </th>
+                            <th>
+                                PHASE
+                            </th>
+                            <th class="lf-th">
+                                <input name="actionButton-Time" value="LAST FILLED" onclick="sortNCRsTimeList('LAST FILLED')" readonly />
+                                <i class="bi bi-arrow-down-up"></i>
+                            </th>
+                            <th class="sc-th">
+                                <input name="actionButton-Time" value="SINCE CREATION" onclick="sortNCRsTimeList('SINCE CREATION')" readonly />
+                                <i class="bi bi-arrow-down-up"></i>
+                            </th>
+                        </tr>
+                    </thead>
+
+                    <tbody class="ncr-list-row ncr-time-list">
+                        <tr class="grey-rows">
+                        </tr>
+                    </tbody>
+
+                </table>
+            </div>
+
+            <div class="navigator" id="navigator-ncr-time-list">
+                <ul class="pagination">
+                    <li class="btn btn-primary previous" onclick="changePageNCRT('previous')">Previous</li>
+                    <li class="btn btn-primary page-counter">1 of 3</li>
+                    <li class="btn btn-primary next" onclick="changePageNCRT('next')">Next</li>
+                </ul>
+            </div>
+
+
+        </div>
+
+    </div>
+
+</div>
+
+<div class="row graphs-charts">
+    <div class="col-lg-7">
+        <div class="card standard-card chart">
+            <div class="card-body">
+                <div class="standard-card-header">
+                    <div>
+                        <h5 class="card-title">Suppliers</h5>
+                        <i class="bi bi-info-circle-fill" data-tooltip="This chart illustrates the total number of defective parts along with the Period-over-Period (PoP) change for the selected supplier."></i>
+                    </div>
+                    <div>
+                        <div class="form-group col-md-5">
+                            @{
+                                @Html.DropDownList("PeriodSuppliers", new SelectList(items), htmlAttributes: new { @class = "form-select", onchange = "loadSuppliersChart()" })
+                            }
+                        </div>
+                        <div class="form-group col-md-7">
+                            <span class="position-absolute">
+                                <i class="bi bi-search"></i>
+                            </span>
+                            <input name="supplierSelected" class="form-control" list="suppliersDatalistOptions" id="suppliersDataList" placeholder="Type to search..." oninput="loadSuppliersChart()">
+                            <datalist id="suppliersDatalistOptions">
+                                @foreach (var supplier in ViewBag.Suppliers)
+                                {
+                                    <option value="@supplier.SupplierSummary"></option>
+                                }
+                            </datalist>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="supEnoughData">
+                    <h6 id="supStatus">---</h6>
+                    <h2><span id="supPartsDefectiveAmount">--</span><span id="supChangeBadge" class="badge"><span id="supPeriodChange">---</span><i class="bi bi-triangle-fill"></i></span></h2>
+                    <div class="chart-container">
+                        <canvas id="mySuppliersChart"></canvas>
+                    </div>
+                </div>
+                <div id="supNotEnoughData">
+                    <div class="chart-container">
+                        <h1 class="notEnoughDataText">Not enough data</h1>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-5">
+        <div class="card standard-card list">
+            <div id="SupEnoughDataList" class="card-body">
+                <div class="standard-card-header">
+                    <div>
+                        <h5 class="card-title">Suppliers list</h5>
+                        <i class="bi bi-info-circle-fill" data-tooltip="This list provides a ranking of the most defective parts grouped by supplier, accompanied by their total count and the Period-over-Period (PoP) change."></i>
+                    </div>
+                    <div>
+                        <div class="form-group col-md-12">
+                            @{
+                                @Html.DropDownList("SuppliersListPeriod", new SelectList(items), htmlAttributes: new { @class = "form-select", onchange = "loadSuppliersList()" })
+                            }
+                        </div>
+                    </div>
+                </div>
+
+                <div class="table-container">
+                    <table class="table table-borderless">
+                        <thead>
+                            <tr>
+                                <th>
+                                    SUPPLIER NAME
+                                </th>
+                                <th>
+                                    <input name="actionButton" value="TOTAL" onclick="sortSuppliersList()" readonly />
+                                    <i class="bi bi-arrow-down-up"></i>
+                                </th>
+                                <th>
+                                    CHANGE
+                                </th>
+                            </tr>
+                        </thead>
+
+                        <tbody class="ncr-list-row suppliers-list">
+                            <tr class="grey-rows">
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="navigator" id="navigator-SuppliersList">
+                    <ul class="pagination">
+                        <li class="btn btn-primary previous" onclick="changePage('previous')">Previous</li>
+                        <li class="btn btn-primary page-counter-suppliers">1 of 3</li>
+                        <li class="btn btn-primary next" onclick="changePage('next')">Next</li>
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+@section Scripts {
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+        
+    <script>
+        //Parts defective by supplier
+        //initialize variables
+        var suppliersListPageNumber = 1;
+        var suppliesListTotalPages = 0;
+
+        loadSuppliersList();
+
+        var suppliersActionButtonName; // Initially false
+
+        // Function to toggle the state of the button and update the UI
+        function sortSuppliersList() {
+            if (suppliersActionButtonName == 'TOTAL') {
+                suppliersActionButtonName = null;
+            }
+            else {
+                suppliersActionButtonName = 'TOTAL';
+            }
+            loadSuppliersList();
+        }
+
+        function loadSuppliersList() {
+            var period = document.getElementById("SuppliersListPeriod").value;
+            var sortDirection = document.getElementById("SuppliersListPeriod").value;
+
+            loadPage(1);
+
+            // Event handler for pagination links
+            window.changePage = function (btn) {
+                if (btn == "previous" && suppliersListPageNumber != 1) {
+                    var prevPage = suppliersListPageNumber - 1;
+                    suppliersListPageNumber--;
+                    loadPage(prevPage);
+                }
+                if (btn == "next" && suppliersListPageNumber < suppliesListTotalPages) {
+                    var nextPage = suppliersListPageNumber + 1;
+                    suppliersListPageNumber++;
+                    loadPage(nextPage);
+                }
+            };
+
+            function loadPage(pageNum) {
+                $.ajax({
+                    type: 'GET',
+                    url: "/NCR/SuppliersList",
+                    dataType: 'json',
+                    data:
+                    {
+                        actionButton: suppliersActionButtonName,
+                        period: period,
+                        page: suppliersListPageNumber,
+                    },
+                    contextType: "application/json; charset=utf8",
+                    dataType: "json",
+                    success: function (response) {
+
+                        //Assign number of pages to the the universal variable
+                        partsListTotalPages = response.numbOfPages;
+
+                        // Clear existing table rows
+                        $('.ncr-list-row.suppliers-list').empty();
+
+                        // Populate table with new data
+                        $.each(response.pagedData, function (index, item) {
+                            //Decide color of the period change number
+                            var colorClass = '';
+                            if (item.periodChange != null) {
+                                if (item.isChangePositive) {
+                                    colorClass = 'positive-change-list';
+                                } else {
+                                    colorClass = 'negative-change-list';
+                                }
+                            }
+
+                            var row = '<tr class="grey-rows">' +
+                                '<td><div>' + item.supplierName + '</td></div>' +
+                                '<td>' + item.partsDefectiveAmount + '</td>' +
+                                //If period change not null assign it to the list record
+                                '<td class="' + colorClass + '">' + (item.periodChange != null ? (item.isChangePositive ? '+' : '-') + item.periodChange + '%' : '---') + '</td>' +
+                                '</tr>';
+                            $('.ncr-list-row.suppliers-list').append(row);
+                        });
+
+                        $('#SupEnoughDataList').css('display', 'flex');
+
+                        $('#navigator-SuppliersList .page-counter-suppliers').text(response.pageNum + ' Of ' + response.numbOfPages);
+
+                        //Disable previous btn if in page one
+                        $('#navigator-SuppliersList .previous').css('background-color', '#19416d');
+                        if (partsListPageNumber <= 1) {
+                            $('#navigator-SuppliersList .previous').css('background-color', 'grey');
+                        }
+                        //Disable next btn if in last page
+                        $('#navigator-SuppliersList .next').css('background-color', '#19416d');
+                        if (partsListPageNumber == partsListTotalPages) {
+                            $('#navigator-SuppliersList .next').css('background-color', 'grey');
+                        }
+                        if (response.pagedData.length < 1) {
+                            $('#SupEnoughDataList .table').css('display', 'none');
+                            var NotEnoughDataText = '<div style="display: flex; align-items: center; justify-content: center; flex: 1;"><h1 class="notEnoughDataText">Not enough data</h1></div>'
+                            $('#SupEnoughDataList').append(NotEnoughDataText);
+                            $('#SupEnoughDataList .navigator').css('display', 'none');
+                        }
+                    },
+                    error: function (error) {
+                        $('#SupEnoughDataList .table').css('display', 'none');
+                        var NotEnoughDataText = '<div style="display: flex; align-items: center; justify-content: center; flex: 1;"><h1 class="notEnoughDataText">Not enough data</h1></div>'
+                        $('#SupEnoughDataList').append(NotEnoughDataText);
+                        $('#SupEnoughDataList .navigator').css('display', 'none');
+                        console.log(error);
+                    }
+                });
+            }
+        };
+
+
+        //Suppliers chart
+        //Initialize variables
+        var mySuppliersChart;
+
+        var firstOption = document.querySelector('#suppliersDatalistOptions option:first-child');
+        if (firstOption) {
+            // Set the value of the input field to the value of the first option
+            document.getElementById('suppliersDataList').value = firstOption.value;
+        }
+
+        loadSuppliersChart();
+
+        function loadSuppliersChart() {
+            var supplierSelected = document.getElementById("suppliersDataList").value;
+            var period = document.getElementById("PeriodSuppliers").value;
+            console.log('loadSuppliersChart called');
+
+            $.ajax({
+                type: "GET",
+                url: "/NCR/SuppliersChartModel",
+                data:
+                {
+                    supplierSelected: supplierSelected,
+                    period: period
+                },
+                contextType: "application/json; charset=utf8",
+                dataType: "json",
+                success: function (response) {
+
+                    var startDate = response.startDate;
+                    var endDate = response.endDate;
+                    var partsDefectiveAmount = response.partsDefectiveAmount;
+                    var periodChange = response.periodChange;
+                    var isChangePositive = response.isChangePositive;
+                    var enoughData = response.enoughData;
+
+                    // Assign the values to the HTML elements
+                    $('#supPartsDefectiveAmount').text(partsDefectiveAmount);
+                    $('#supPeriodChange').text((isChangePositive ? '+' : '-') + periodChange + '%');
+                    $('#supChangeBadge i').css('display', 'block');
+                    $('#supEnoughData').css('display', 'flex');
+                    $('#supNotEnoughData').css('display', 'none');
+
+                    if (periodChange == null) {
+                        $('#supPeriodChange').text('---');
+                        $('#supChangeBadge').css('background-color', '#AF3939');
+                        $('#supChangeBadge i').css('display', 'none');
+                    }
+                    if (enoughData == false) {
+                        $('#supEnoughData').css('display', 'none');
+                        $('#supNotEnoughData').css('display', 'flex');
+                    }
+                    if (isChangePositive == false) {
+                        $('#supStatus').text('There was a PoP decrease');
+                        $('#supChangeBadge').css('background-color', '#027A49');
+                        $('#supChangeBadge i').css('color', '#00D308');
+                        $('#supChangeBadge i').css('transform', 'rotate(3.142rad)');
+                    }
+                    else if (isChangePositive == true) {
+                        $('#supStatus').text('There was a PoP increase');
+                    }
+                    if (periodChange == null) {
+                        $('#supStatus').text('Not enough data to compare');
+                    }
+                },
+                error: function (xhr, status, error) {
+                    $('#supEnoughData').css('display', 'none');
+                    $('#supNotEnoughData').css('display', 'flex');
+                    // Handle errors if the AJAX request fails
+                    console.error(error); // Log the error to the console
+                }
+            });
+
+            $.ajax({
+                type: "POST",
+                url: "/NCR/GenSuppliersChart",
+                data:
+                {
+                    supplierSelected: supplierSelected,
+                    period: period
+                },
+                contextType: "application/json; charset=utf8",
+                dataType: "json",
+                success: OnSuccess,
+            });
+
+            function OnSuccess(data) {
+                var _data = data;
+                var _labels = _data[0];
+                var _total = _data[1];
+                var _recordDates = _data[2];
+
+                // Create an array to hold data for each day of the month
+                var chartData = new Array(_labels.length).fill(0); // Initialize with zeros for all days
+
+                // Insert actual data into the corresponding positions
+                for (var i = 0; i < _recordDates.length; i++) {
+                    var dateIndex = parseInt(_recordDates[i]);
+                    chartData[dateIndex] += _total[i]; // Add to existing value if dateIndex is repeated
+                }
+
+                // Destroy the old chart instance if it exists
+                if (mySuppliersChart) {
+                    mySuppliersChart.destroy();
+                }
+
+                const chartCanvas = document.getElementById('mySuppliersChart');
+
+                mySuppliersChart = new Chart(chartCanvas, {
+                    type: 'line',
+                    data: {
+                        labels: _labels,
+                        datasets: [{
+                            backgroundColor: "#19416D",
+                            borderColor: "#19416D",
+                            data: chartData,
+                            borderWidth: 1,
+                        }]
+                    },
+                    options: {
+                        plugins: {
+                            legend: {
+                                display: false
+                            }
+                        },
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            x: {
+                                ticks: {
+                                    maxRotation: 30,
+                                    minRotation: 0,
+                                    maxTicksLimit: _labels.length > 20 ? _labels.length / 3 : 10,
+                                    source: 'auto',
+                                    autoSkip: true
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
+        //NCRs time list
+        //initialize variables
+        var NCRTimeListPageNumber = 1;
+        var NCRTimeListTotalPages = 0;
+
+        loadNCRsTimeList();
+
+        var actionButtonTimeName; 
+
+        // Function to toggle the state of the button and update the UI
+        function sortNCRsTimeList(name) {
+            if (actionButtonTimeName == 'LAST FILLED' || actionButtonTimeName == 'SINCE CREATION') {
+                actionButtonTimeName = null;
+            }
+            else {
+                actionButtonTimeName = name;
+            }
+            loadNCRsTimeList();
+        }
+
+        function loadNCRsTimeList() {
+
+            loadPage(1);
+
+            // Event handler for pagination links
+            window.changePageNCRT = function (btn) {
+                if (btn == "previous" && NCRTimeListPageNumber != 1) {
+                    var prevPage = NCRTimeListPageNumber - 1;
+                    NCRTimeListPageNumber--;
+                    loadPage(prevPage);
+                }
+                if (btn == "next" && NCRTimeListPageNumber < NCRTimeListTotalPages) {
+                    var nextPage = NCRTimeListPageNumber + 1;
+                    NCRTimeListPageNumber++;
+                    loadPage(nextPage);
+                }
+            };
+
+            function loadPage(pageNum) {
+                $.ajax({
+                    type: 'GET',
+                    url: "/NCR/GetNCRTimeList",
+                    dataType: 'json',
+                    data:
+                    {
+                        actionButton: actionButtonTimeName,
+                        page: NCRTimeListPageNumber,
+                    },
+                    contextType: "application/json; charset=utf8",
+                    dataType: "json",
+                    success: function (response) {
+                        console.log(response);
+
+                        //Assign number of pages to the the universal variable
+                        NCRTimeListTotalPages = response.numbOfPages;
+
+                        // Clear existing table rows
+                        $('.ncr-list-row.ncr-time-list').empty();
+
+                        // Populate table with new data
+                        $.each(response.ncrtPagedData, function (index, item) {
+                            var lastFilledNum = item.lastFilled == null ? '---' : item.lastFilled;
+
+                            var row = '<tr class="grey-rows">' +
+                                '<td><div>' + item.ncrNo + '</td></div>' +
+                                '<td>' + item.phase + '</td>' +
+                                '<td>' + lastFilledNum + '</td>' +
+                                '<td>' + item.sinceCreated + '</td>' +
+                                '</tr>';
+                            $('.ncr-list-row.ncr-time-list').append(row);
+                        });
+
+                        $('#EnoughDataNCRT').css('display', 'flex');
+
+                        $('#navigator-ncr-time-list .page-counter').text(response.pageNum + ' Of ' + response.numbOfPages);
+
+                        //Disable previous btn if in page one
+                        $('#navigator-ncr-time-list .previous').css('background-color', '#19416d');
+                        if (NCRTimeListPageNumber <= 1) {
+                            $('#navigator-ncr-time-list .previous').css('background-color', 'grey');
+                        }
+                        //Disable next btn if in last page
+                        $('#navigator-ncr-time-list .next').css('background-color', '#19416d');
+                        if (NCRTimeListPageNumber == NCRTimeListTotalPages) {
+                            $('#navigator-ncr-time-list .next').css('background-color', 'grey');
+                        }
+                        if (response.ncrtPagedData.length < 1) {
+                            $('#EnoughDataNCRT .table-container').css('display', 'none');
+                            var NotEnoughDataText = '<div style="display: flex; align-items: center; justify-content: center; flex: 1;"><h1 class="notEnoughDataText">Not enough data</h1></div>'
+                            $('#EnoughDataNCRT').append(NotEnoughDataText);
+                            $('#EnoughDataNCRT .navigator').css('display', 'none');
+                        }
+                    },
+                    error: function (error) {
+                        $('#EnoughDataNCRT .table-container').css('display', 'none');
+                        var NotEnoughDataText = '<div style="display: flex; align-items: center; justify-content: center; flex: 1;"><h1 class="notEnoughDataText">Not enough data</h1></div>'
+                        $('#EnoughDataNCRT').append(NotEnoughDataText);
+                        $('#EnoughDataNCRT .navigator').css('display', 'none');
+                        console.log(error);
+                    }
+                });
+            }
+        };
+
+        //Parts Defective list
+        //initialize variables
+        var partsListPageNumber = 1;
+        var partsListTotalPages = 0;
+
+        loadPartsList();
+
+        var actionButtonName; // Initially false
+
+        // Function to toggle the state of the button and update the UI
+        function sortPartsList() {
+            if (actionButtonName == 'TOTAL') {
+                actionButtonName = null;
+            }
+            else{
+                actionButtonName = 'TOTAL';
+            }
+            loadPartsList();
+        }
+
+        function loadPartsList() {
+            var period = document.getElementById("PartsListPeriod").value;
+            var sortDirection = document.getElementById("PartsListPeriod").value;
+            
+            loadPage(1);
+
+            // Event handler for pagination links
+            window.changePage = function (btn) {
+                if (btn == "previous" && partsListPageNumber != 1) {
+                    var prevPage = partsListPageNumber - 1;
+                    partsListPageNumber--;
+                    loadPage(prevPage);
+                }
+                if (btn == "next" && partsListPageNumber < partsListTotalPages) {
+                    var nextPage = partsListPageNumber + 1;
+                    partsListPageNumber++;
+                    loadPage(nextPage);
+                }
+            };
+
+            function loadPage(pageNum){
+                $.ajax({
+                    type: 'GET',
+                    url: "/NCR/GetPartsDefective",
+                    dataType: 'json',
+                    data:
+                    {
+                        actionButton: actionButtonName,
+                        period: period,
+                        page: partsListPageNumber,
+                    },
+                    contextType: "application/json; charset=utf8",
+                    dataType: "json",
+                    success: function (response) {
+
+                        //Assign number of pages to the the universal variable
+                        partsListTotalPages = response.numbOfPages;
+
+                        // Clear existing table rows
+                        $('.ncr-list-row.parts-defective-list').empty();
+
+                        // Populate table with new data
+                        $.each(response.pagedData, function (index, item) {
+                            //Decide color of the period change number
+                            var colorClass = '';
+                            if (item.periodChange != null) {
+                                if (item.isChangePositive) {
+                                    colorClass = 'positive-change-list';
+                                } else {
+                                    colorClass = 'negative-change-list';
+                                }
+                            }
+
+                            var row = '<tr class="grey-rows">' +
+                                '<td><div>' + item.partNumber + '</td></div>' +
+                                '<td>' + item.partsDefectiveAmount + '</td>' +
+                                //If period change not null assign it to the list record
+                                '<td class="' + colorClass + '">' + (item.periodChange != null ? (item.isChangePositive ? '+' : '-') + item.periodChange + '%' : '---') + '</td>' +
+                                '</tr>';
+                            $('.ncr-list-row.parts-defective-list').append(row);
+                        });
+
+                        $('#EnoughDataPartsList').css('display', 'flex');
+
+                        $('#navigator-PartsList .page-counter-parts').text(response.pageNum + ' Of ' + response.numbOfPages);
+
+                        //Disable previous btn if in page one
+                        $('#navigator-PartsList .previous').css('background-color', '#19416d');
+                        if(partsListPageNumber <= 1){
+                            $('#navigator-PartsList .previous').css('background-color', 'grey');
+                        }
+                        //Disable next btn if in last page
+                        $('#navigator-PartsList .next').css('background-color', '#19416d');
+                        if (partsListPageNumber == partsListTotalPages) {
+                            $('#navigator-PartsList .next').css('background-color', 'grey');
+                        }
+                        if(response.pagedData.length < 1){
+                            $('#EnoughDataPartsList .table').css('display', 'none');
+                            var NotEnoughDataText = '<div style="display: flex; align-items: center; justify-content: center; flex: 1;"><h1 class="notEnoughDataText">Not enough data</h1></div>'
+                            $('#EnoughDataPartsList').append(NotEnoughDataText);
+                            $('#EnoughDataPartsList .navigator').css('display', 'none');
+                        }
+                    },
+                    error: function (error) {
+                        $('#EnoughDataPartsList .table').css('display', 'none');
+                        var NotEnoughDataText = '<div style="display: flex; align-items: center; justify-content: center; flex: 1;"><h1 class="notEnoughDataText">Not enough data</h1></div>'
+                        $('#EnoughDataPartsList').append(NotEnoughDataText);
+                        $('#EnoughDataPartsList .navigator').css('display', 'none');
+                        console.log(error);
+                    }
+                });
+            }
+        };
+
+
+        //Parts Defective Chart
+        // Define a variable
+        var myChart;
+
+        var firstOption = document.querySelector('#datalistOptions option:first-child');
+        if (firstOption) {
+            // Set the value of the input field to the value of the first option
+            document.getElementById('exampleDataList').value = firstOption.value;
+        }
+
+        loadPartsChart();
+
+        function loadPartsChart() {
+            var partSelected = document.getElementById("exampleDataList").value;
+            var period = document.getElementById("period").value;
+
+            $.ajax({
+                type: "GET",
+                url: "/NCR/PartsDefective",
+                data:
+                {
+                    partSelected: partSelected,
+                    period: period
+                },
+                contextType: "application/json; charset=utf8",
+                dataType: "json",
+                success: function (response) {
+
+                    var startDate = response.startDate;
+                    var endDate = response.endDate;
+                    var partsDefectiveAmount = response.partsDefectiveAmount;
+                    var periodChange = response.periodChange;
+                    var isChangePositive = response.isChangePositive;
+                    var enoughData = response.enoughData;
+
+                    // Assign the values to the HTML elements
+                    $('#partsDefectiveAmount').text(partsDefectiveAmount);
+                    $('#periodChange').text((isChangePositive ? '+' : '-') + periodChange + '%');
+                    $('#ChangeBadge i').css('display', 'block');
+                    $('#EnoughData').css('display', 'flex');
+                    $('#NotEnoughData').css('display', 'none');
+
+                    if (periodChange == null) {
+                        $('#periodChange').text('---');
+                        $('#ChangeBadge').css('background-color', '#AF3939');
+                        $('#ChangeBadge i').css('display', 'none');
+                    }
+                    if (enoughData == false) {
+                        $('#EnoughData').css('display', 'none');
+                        $('#NotEnoughData').css('display', 'flex');
+                    }
+                    if (isChangePositive == false) {
+                        $('#Status').text('There was a PoP decrease');
+                        $('#ChangeBadge').css('background-color', '#027A49');
+                        $('#ChangeBadge i').css('color', '#00D308');
+                        $('#ChangeBadge i').css('transform', 'rotate(3.142rad)');
+                    }
+                    else if (isChangePositive == true) {
+                        $('#Status').text('There was a PoP increase');
+                    }
+                    if (periodChange == null) {
+                        $('#Status').text('Not enough data to compare');
+                    }
+                },
+                error: function (xhr, status, error) {
+                    $('#EnoughData').css('display', 'none');
+                    $('#NotEnoughData').css('display', 'flex');
+                    // Handle errors if the AJAX request fails
+                    console.error(error); // Log the error to the console
+                }
+            });
+
+            $.ajax({
+                type: "POST",
+                url: "/NCR/GenChart",
+                data:
+                {
+                    partSelected: partSelected,
+                    period: period
+                },
+                contextType: "application/json; charset=utf8",
+                dataType: "json",
+                success: OnSuccess,
+            });
+
+            function OnSuccess(data) {
+                var _data = data;
+                var _labels = _data[0];
+                var _total = _data[1];
+                var _recordDates = _data[2];
+
+                // Create an array to hold data for each day of the month
+                var chartData = new Array(_labels.length).fill(0); // Initialize with zeros for all days
+
+                // Insert actual data into the corresponding positions
+                for (var i = 0; i < _recordDates.length; i++) {
+                    var dateIndex = parseInt(_recordDates[i]);
+                    chartData[dateIndex] += _total[i]; // Add to existing value if dateIndex is repeated
+                }
+
+                // Destroy the old chart instance if it exists
+                if (myChart) {
+                    myChart.destroy();
+                }
+
+                const chartCanvas = document.getElementById('myChart');
+
+                myChart = new Chart(chartCanvas, {
+                    type: 'line',
+                    data: {
+                        labels: _labels,
+                        datasets: [{
+                            backgroundColor: "#19416D",
+                            borderColor: "#19416D",
+                            data: chartData,
+                            borderWidth: 1,
+                        }]
+                    },
+                    options: {
+                        plugins: {
+                            legend: {
+                                display: false
+                            }
+                        },
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            x: {
+                                ticks: {
+                                    maxRotation: 30,
+                                    minRotation: 0,
+                                    maxTicksLimit: _labels.length > 20 ? _labels.length / 3 : 10,
+                                    source: 'auto',
+                                    autoSkip: true
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+
+        }
+
+    </script>
+
+}

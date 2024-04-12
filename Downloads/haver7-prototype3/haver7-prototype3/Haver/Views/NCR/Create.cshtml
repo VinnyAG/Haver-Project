@@ -1,0 +1,1696 @@
+﻿@model NCR
+
+@{
+    ViewData["Title"] = "Create";
+}
+<partial name="_addProblemModal" />
+<partial name="_addPartModal" />
+<partial name="_addSupplierModal" />
+
+<div class="standard-page-header">
+    <partial name="_BackToList" />
+    <h1>NCR Form</h1>
+</div>
+
+<div class="accordion" id="accordionPanelsStayOpenExample">
+    <div class="accordion-item">
+        <h2 class="accordion-header" id="panelsStayOpen-headingOne">
+            <button class="accordion-button collapsed" id="Quality-Section" type="button" data-bs-toggle="collapse" data-bs-target="#QualityForm" aria-expanded="true" aria-controls="QualityForm">
+                <i class="bi bi-pencil-square"></i>Quality Representative
+            </button>
+        </h2>
+        <div id="QualityForm" class="accordion-collapse collapse" aria-labelledby="QualityRep-Section">
+            <div class="accordion-body">
+
+                <form asp-action="CreateQualityRepresentative" method="post" enctype="multipart/form-data">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                    @Html.AntiForgeryToken()
+
+                    @Html.HiddenFor(model => model.Phase)
+
+                    <div class="section-form" >
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label asp-for="QualityRepresentative.ProcessApplicableID" class="control-label"></label><span> (required)</span>
+                                    <select asp-for="QualityRepresentative.ProcessApplicableID" class="form-select" asp-items="ViewBag.ProcessApplicableID" data-val="disabled">
+                                        <option value="">Select a Process Applicable</option>
+                                    </select>
+                                    <span asp-validation-for="QualityRepresentative.ProcessApplicableID" class="text-danger"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="QualityRepresentative.PartID" class="control-label"></label><span> (required)</span>
+                                    <select asp-for="QualityRepresentative.PartID" class="form-select" asp-items="ViewBag.PartID" data-val="disabled">
+                                        <option value="">Select a Part</option>
+                                    </select>
+                                    <span asp-validation-for="QualityRepresentative.PartID" class="text-danger"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="QualityRepresentative.ProblemID" class="control-label"></label><span> (required)</span>
+                                    <select asp-for="QualityRepresentative.ProblemID" class="form-select" asp-items="ViewBag.ProblemID" data-val="disabled">
+                                        <option value="">Select a Problem</option>
+                                    </select>
+                                    <span asp-validation-for="QualityRepresentative.ProblemID" class="text-danger"></span>
+                                </div>
+                                <div class="form-group form-check">
+                                    <label class="form-check-label">
+                                        <input class="form-check-input" asp-for="QualityRepresentative.NonConforming" checked disabled data-val="disabled" /> @Html.DisplayNameFor(model => model.QualityRepresentative.NonConforming)
+                                    </label>
+                                </div>
+                                <div class="form-group form-check">
+                                    <label class="form-check-label">
+                                        <input class="form-check-input" asp-for="QualityRepresentative.ConfirmingEng" data-val="disabled" /> @Html.DisplayNameFor(model => model.QualityRepresentative.ConfirmingEng)
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label asp-for="QualityRepresentative.SupplierID" class="control-label"></label>
+                                    <div class="input-group mb-3">
+                                        <select asp-for="QualityRepresentative.SupplierID" class="form-control" asp-items="ViewBag.SupplierID">
+                                            <option value="">Select a Supplier</option>
+                                        </select>
+                                        <button class="btn-plus" type="button" id="nowAddSupplier" data-bs-toggle="modal" data-bs-target="#addSupplierModal" typeof="button">
+                                            <svg width="53" height="48" viewBox="0 0 53 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M0.333252 0H47.3333C50.0947 0 52.3333 2.23858 52.3333 5V43C52.3333 45.7614 50.0947 48 47.3333 48H0.333252V0Z" fill="#19416D" />
+                                                <path d="M26.3333 13.3334V34.6667" stroke="white" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+                                                <path d="M15.6665 24H36.9998" stroke="white" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+                                            </svg>
+                                        </button>
+                                        <span asp-validation-for="QualityRepresentative.SupplierID" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="QualityRepresentative.QuantReceived" class="control-label"></label><span> (required)</span>
+                                    <input asp-for="QualityRepresentative.QuantReceived" class="form-control" oninput="this.value = Math.abs(this.value)" data-val="disabled" />
+                                    <span asp-validation-for="QualityRepresentative.QuantReceived" class="text-danger"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="QualityRepresentative.QuantDefective" class="control-label"></label><span> (required)</span>
+                                    <input asp-for="QualityRepresentative.QuantDefective" class="form-control" oninput="this.value = Math.abs(this.value)" data-val="disabled" />
+                                    <span asp-validation-for="QualityRepresentative.QuantDefective" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label asp-for="NCRNum" class="control-label"></label><span> (required)</span>
+                                    <input asp-for="NCRNum" class="form-control" readonly />
+                                    <span asp-validation-for="NCRNum" class="text-danger"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="QualityRepresentative.PoNo" class="control-label"></label><span> (required)</span>
+                                    <input asp-for="QualityRepresentative.PoNo" class="form-control" oninput="this.value = Math.abs(this.value)" data-val="disabled" />
+                                    <span asp-validation-for="QualityRepresentative.PoNo" class="text-danger"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="QualityRepresentative.SalesOrd" class="control-label"></label><span> (required)</span>
+                                    <input asp-for="QualityRepresentative.SalesOrd" id="myinputT" class="form-control" data-val="disabled"/>
+                                    <span asp-validation-for="QualityRepresentative.SalesOrd" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label asp-for="QualityRepresentative.QualityRepresentativeSign" class="control-label"></label><span> (required)</span>
+                                    <input asp-for="QualityRepresentative.QualityRepresentativeSign" class="form-control" data-val="disabled" />
+                                    <span asp-validation-for="QualityRepresentative.QualityRepresentativeSign" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label asp-for="QualityRepresentative.QualityRepDate" class="control-label"></label><span> (required)</span>
+                                    <input asp-for="QualityRepresentative.QualityRepDate" class="form-control" id="qualityRepDate" readonly data-val="disabled"/>
+                                    <span asp-validation-for="QualityRepresentative.QualityRepDate" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row section-form">
+                        <div class="section-label">
+                            <h4>Report Notes</h4>
+                            <hr />
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label asp-for="QualityRepresentative.DescDefect" class="control-label"></label><span> (required)</span>
+                                <textarea asp-for="QualityRepresentative.DescDefect" rows="5" class="form-control" data-val="disabled"></textarea>
+                                <span asp-validation-for="QualityRepresentative.DescDefect" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    @if ((Model.Phase != null && Model.QualityRepresentative != null) && (Model.IsNCRDraft == false && ((Model.QualityRepresentative.QualityPhotos?.Any() ?? false) || (Model.QualityRepresentative.VideoLinks?.Any() ?? false))))
+                    {
+
+                        <div class="section-form multimedia">
+                            @if (Model.QualityRepresentative.QualityPhotos.Any() || Model.QualityRepresentative.VideoLinks.Any())
+                            {
+                                <div class="section-label">
+                                    <h4>Multimedia</h4>
+                                    <hr />
+                                </div>
+                            }
+                            @if (Model.QualityRepresentative.QualityPhotos.Any())
+                            {
+                                <p class="control-label">Images</p>
+                                <div class="form-group details-images">
+                                    @foreach (var image in Model.QualityRepresentative.QualityPhotos)
+                                    {
+                                        string imageBase64 = Convert.ToBase64String(image.Content);
+                                        string imageSrc = string.Format("data:" + image.MimeType + ";base64,{0}", imageBase64);
+                                        <div class="card editor" style="width: 14rem;">
+                                            <img src="@imageSrc" alt="Customer Image" title="Customer Image" class="img-fluid rounded" />
+
+                                        </div>
+                                    }
+                                </div>
+                            }
+                            @if (Model.QualityRepresentative.VideoLinks != null && Model.QualityRepresentative.VideoLinks.Any())
+                            {
+                                <div class="form-group details-links">
+                                    <p class="control-label">Video links</p>
+                                    <ul>
+                                        @foreach (var link in Model.QualityRepresentative.VideoLinks)
+                                        {
+                                            <li>
+                                                <a href="@link.Link" target="_blank">@link.Link</a>
+                                            </li>
+                                        }
+                                    </ul>
+                                </div>
+                            }
+                        </div>
+                    }
+
+                    @if (Model.Phase == "Quality Representative" || Model.Phase == null)
+                    {
+                        <div class="row section-form">
+                            <div class="section-label">
+                                <h4>Multimedia</h4>
+                                <hr />
+                            </div>
+                            <div class="col-md-12 uploader">
+                                <label class="control-label">Images, screenshots, drawings</label>
+                                <div class="form-group images-upload-container">
+                                    <div class="upload-button-container">
+                                        <label for="formFile" class="form-label">Drop files here or click on the button below</label>
+                                        <button class="btn btn-primary">Upload</button>
+                                        <input class="form-control" type="file" id="uploadFilebtn" name="Pictures" multiple onchange="handleFileSelection(this, 'qualityrep-container')">
+                                    </div>
+                                    <input id="uploadFileArea" class="form-control" type="file" name="Pictures" multiple onchange="handleFileSelection(this, 'qualityrep-container')" />
+                                </div>
+                                <div class="form-group" id="qualityrep-container"></div>
+                            </div>
+
+                            @if (Model.QualityRepresentative != null && (Model.QualityRepresentative.QualityPhotos?.Any() ?? false) && Model.IsNCRDraft == true)
+                            {
+                            <div class="section-form multimedia">
+                                    <div class="form-group details-images editor">
+                                        @foreach (var image in Model.QualityRepresentative.QualityPhotos)
+                                        {
+                                            string imageBase64 = Convert.ToBase64String(image.Content);
+                                            string imageSrc = string.Format("data:" + image.MimeType + ";base64,{0}", imageBase64);
+
+                                            <div class="card editor" style="width: 14rem;">
+                                                <img src="@imageSrc" alt="Image" title="Customer Image" class="card-img-top" />
+                                                <div class="card-body">
+                                                    <p>Remove Image</p>
+                                                    <input class="form-check-input" type="checkbox" id="imagesToRemove" name="imagesToRemove" value="@image.ID">
+                                                </div>
+                                            </div>
+                                        }
+                                    </div>
+                            </div>
+                            }
+
+                            <div class="col-md-12">
+                                <div class="form-group link-adder">
+                                    <label for="Links" class="form-label">Links</label>
+                                    <div>
+                                        <input class="form-control" name="Links" type="text" id="Links" />
+                                        <button type="button" id="addLinkButton" class="btn btn-sm btn-primary" onclick="addLink('linksListContainerQuality')"><i class="bi bi-plus-lg"></i></button>
+                                    </div>
+                                </div>
+
+                                <div class="form-group" id="linksListContainerQuality"></div>
+                            </div>
+
+                            @if (Model.QualityRepresentative != null && (Model.QualityRepresentative.VideoLinks?.Any() ?? false) && Model.IsNCRDraft == true)
+                            {
+                            <div class="section-form multimedia">
+                                    <div class="form-group details-links editor">
+                                        <ul>
+                                            @foreach (var link in Model.QualityRepresentative.VideoLinks)
+                                            {
+                                                <li>
+                                                    <a href="@link.Link" target="_blank">@link.Link</a>
+                                                    <div>
+                                                        <p>Check to remove</p>
+                                                        <input class="form-check-input" type="checkbox" id="linksToRemove" name="linksToRemove" value="@link.ID">
+                                                    </div>
+                                                </li>
+                                            }
+                                        </ul>
+                                    </div>
+                            </div>
+                            }
+                        </div>
+
+                        <div class="section-form">
+                            <div class="section-label">
+                                <h4>Report notification</h4>
+                                <hr />
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <div class="form-observations">
+                                            <i class="bi bi-info-circle-fill"></i>
+                                            <p>The notification fields are auto filled by default. You can edit them as needed. If no changes are made, the default message and recipients will be used.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="row email-boxes">
+                                        <div class="form-group col-md-6">
+                                            <label class="control-label"> Available Staff</label> <button type="button" id="btnRight" class="btn btn-sm">
+                                                <i class="bi bi-plus-lg"></i>
+                                            </button>
+                                            @Html.ListBox("selectedOptions", (MultiSelectList)ViewBag.selOpts, new { @size = 10, @class = "form-control", @style="margin-top: 0.5rem;" })
+                                        </div>
+
+                                        <div class="form-group col-md-6">
+                                            <label class="control-label"> Staff Selected</label> <button type="button" id="btnLeft" class="btn btn-sm">
+                                                <i class="bi bi-x-lg"></i>
+                                            </button>
+                                            @Html.ListBox("availOptions", (MultiSelectList)ViewBag.availOpts, new { @size = 10, @class = "form-control", @style="margin-top: 0.5rem;" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="text-danger">@ViewData["Message"]</div>
+                                    <div class="form-group">
+                                        <label for="Subject" class="control-label">Email Subject</label>
+                                        <input type="text" id="Subject" name="Subject" class="form-control" value="NCR @Model.NCRNum, @Model.Phase section completed"/>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="emailContent" class="control-label">Message Content</label>
+                                        <textarea id="emailContent" name="emailContent" rows="5" cols="40" class="form-control">
+Hello All,
+
+I have created a new NCR for review.
+
+Regards
+                                        </textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <input type="submit" value="Submit" class="btn btn-primary" />
+                            <input type="submit" name="draft" value="Save draft" class="btn btn-primary" />
+                            <input asp-for="IsNCRDraft" class="form-control" hidden/>
+                        </div>
+                    }
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="accordion-item">
+        <h2 class="accordion-header" id="panelsStayOpen-headingTwo">
+            <button class="accordion-button collapsed" id="Engineering-Section" type="button" data-bs-toggle="collapse" data-bs-target="#EngineerForm" aria-expanded="false" aria-controls="EngineerForm">
+                <i class="bi bi-gear"></i>Engineering
+            </button>
+        </h2>
+        <div id="EngineerForm" class="accordion-collapse collapse" aria-labelledby="Engineering-Section">
+            <div class="accordion-body">
+
+                <form asp-action="CreateEngineering" method="post" enctype="multipart/form-data">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                    @Html.AntiForgeryToken()
+
+                    <div class="section-form">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label asp-for="Engineering.EngReviewID" class="control-label"></label><span> (required)</span>
+                                    <select asp-for="Engineering.EngReviewID" class="form-select" asp-items="ViewBag.EngReviewID" data-val="disabled">
+                                        <option value="">Select an option</option>
+                                    </select>
+                                    <span asp-validation-for="Engineering.EngReviewID" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label asp-for="Engineering.IsCustNotificationNecessary" class="custom-control-label"></label><br />
+                                    <input class="form-check-input" asp-for="Engineering.IsCustNotificationNecessary" id="custNotificationCheckbox" data-val="disabled" />
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label asp-for="Engineering.DrawReqUpdating" class="custom-control-label"></label><br />
+                                    <input class="form-check-input" asp-for="Engineering.DrawReqUpdating" id="drawReqUpdatingCheckbox" data-val="disabled" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label asp-for="Engineering.EngineerSign" class="control-label"></label><span> (required)</span>
+                                    <input asp-for="Engineering.EngineerSign" class="form-control" data-val="disabled" />
+                                    <span asp-validation-for="Engineering.EngineerSign" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label asp-for="Engineering.EngineeringDate" class="control-label"></label><span> (required)</span>
+                                    <input asp-for="Engineering.EngineeringDate" id="engineeringDate" class="form-control" readonly data-val="disabled" />
+                                    <span asp-validation-for="Engineering.EngineeringDate" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row section-form">
+                        <div class="section-label">
+                            <h4>Drawings</h4>
+                            <hr />
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label asp-for="Engineering.OrgRevisionNum" class="control-label"></label>
+                                <input asp-for="Engineering.OrgRevisionNum" class="form-control drawing-field" oninput="this.value = Math.abs(this.value)" data-val="disabled" />
+                                <span asp-validation-for="Engineering.OrgRevisionNum" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Engineering.UpdatedRevisionNum" class="control-label"></label>
+                                <input asp-for="Engineering.UpdatedRevisionNum" class="form-control drawing-field" oninput="this.value = Math.abs(this.value)" data-val="disabled" />
+                                <span asp-validation-for="Engineering.UpdatedRevisionNum" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label asp-for="Engineering.RevisionedBy" class="control-label"></label>
+                                <input asp-for="Engineering.RevisionedBy" class="form-control drawing-field" data-val="disabled" />
+                                <span asp-validation-for="Engineering.RevisionedBy" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Engineering.RevisionDate" class="control-label"></label>
+                                <input asp-for="Engineering.RevisionDate" class="form-control drawing-field" data-val="disabled" />
+                                <span asp-validation-for="Engineering.RevisionDate" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row section-form">
+                        <div class="section-label">
+                            <h4>Report Notes</h4>
+                            <hr />
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label asp-for="Engineering.Disposition" class="control-label"></label><span> (required)</span>
+                                <textarea asp-for="Engineering.Disposition" rows="5" class="form-control" data-val="disabled"></textarea>
+                                <span asp-validation-for="Engineering.Disposition" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Engineering.CustIssueMsg" class="control-label"></label>
+                                <textarea asp-for="Engineering.CustIssueMsg" rows="5" class="form-control" id="custIssueMsgField" data-val="disabled"></textarea>
+                                <span asp-validation-for="Engineering.CustIssueMsg" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    @if ((Model.Phase != null && Model.Engineering != null) && (Model.IsNCRDraft == false && ((Model.Engineering.QualityPhotos?.Any() ?? false) || (Model.Engineering.VideoLinks?.Any() ?? false))))
+                    {
+
+                        <div class="section-form multimedia">
+                            @if (Model.Engineering.QualityPhotos.Any() || Model.Engineering.VideoLinks.Any())
+                            {
+                                <div class="section-label">
+                                    <h4>Multimedia</h4>
+                                    <hr />
+                                </div>
+                            }
+                            @if (Model.Engineering.QualityPhotos.Any())
+                            {
+                                <p class="control-label">Images</p>
+                                <div class="form-group details-images">
+                                    @foreach (var image in Model.Engineering.QualityPhotos)
+                                    {
+                                        string imageBase64 = Convert.ToBase64String(image.Content);
+                                        string imageSrc = string.Format("data:" + image.MimeType + ";base64,{0}", imageBase64);
+                                        <div class="card editor" style="width: 14rem;">
+                                            <img src="@imageSrc" alt="Customer Image" title="Customer Image" class="img-fluid rounded" />
+
+                                        </div>
+                                    }
+                                </div>
+                            }
+                            @if (Model.Engineering.VideoLinks != null && Model.Engineering.VideoLinks.Any())
+                            {
+                                <div class="form-group details-links">
+                                    <p class="control-label">Video links</p>
+                                    <ul>
+                                        @foreach (var link in Model.Engineering.VideoLinks)
+                                        {
+                                            <li>
+                                                <a href="@link.Link" target="_blank">@link.Link</a>
+                                            </li>
+                                        }
+                                    </ul>
+                                </div>
+                            }
+                        </div>
+                    }
+
+                    @if (Model.Phase == "Engineering" || Model.Phase == null)
+                    {
+                        <div class="row section-form">
+                            <div class="section-label">
+                                <h4>Multimedia</h4>
+                                <hr />
+                            </div>
+                            <div class="col-md-12 uploader">
+                                <label class="control-label">Images, screenshots, drawings</label>
+                                <div class="form-group images-upload-container">
+                                    <div class="upload-button-container">
+                                        <label for="formFile" class="form-label">Drop files here or click on the button below</label>
+                                        <button class="btn btn-primary">Upload</button>
+                                        <input class="form-control" type="file" id="uploadFilebtn" name="Pictures" multiple onchange="handleFileSelection(this, 'qualityrep-container')">
+                                    </div>
+                                    <input id="uploadFileArea" class="form-control" type="file" name="Pictures" multiple onchange="handleFileSelection(this, 'qualityrep-container')" />
+                                </div>
+                                <div class="form-group" id="qualityrep-container"></div>
+                            </div>
+
+                            @if (Model.Engineering != null && (Model.Engineering.QualityPhotos?.Any() ?? false) && Model.IsNCRDraft == true)
+                            {
+                                <div class="section-form multimedia">
+                                    <div class="form-group details-images editor">
+                                        @foreach (var image in Model.Engineering.QualityPhotos)
+                                        {
+                                            string imageBase64 = Convert.ToBase64String(image.Content);
+                                            string imageSrc = string.Format("data:" + image.MimeType + ";base64,{0}", imageBase64);
+
+                                            <div class="card editor" style="width: 14rem;">
+                                                <img src="@imageSrc" alt="Image" title="Customer Image" class="card-img-top" />
+                                                <div class="card-body">
+                                                    <p>Remove Image</p>
+                                                    <input class="form-check-input" type="checkbox" id="imagesToRemove" name="imagesToRemove" value="@image.ID">
+                                                </div>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            }
+
+                            <div class="col-md-12">
+                                <div class="form-group link-adder">
+                                    <label for="Links" class="form-label">Links</label>
+                                    <div>
+                                        <input class="form-control" name="Links" type="text" id="Links" />
+                                        <button type="button" id="addLinkButton" class="btn btn-sm btn-primary" onclick="addLink('linksListContainerQuality')"><i class="bi bi-plus-lg"></i></button>
+                                    </div>
+                                </div>
+
+                                <div class="form-group" id="linksListContainerQuality"></div>
+                            </div>
+
+                            @if (Model.Engineering != null && (Model.Engineering.VideoLinks?.Any() ?? false) && Model.IsNCRDraft == true)
+                            {
+                                <div class="section-form multimedia">
+                                    <div class="form-group details-links editor">
+                                        <ul>
+                                            @foreach (var link in Model.Engineering.VideoLinks)
+                                            {
+                                                <li>
+                                                    <a href="@link.Link" target="_blank">@link.Link</a>
+                                                    <div>
+                                                        <p>Check to remove</p>
+                                                        <input class="form-check-input" type="checkbox" id="linksToRemove" name="linksToRemove" value="@link.ID">
+                                                    </div>
+                                                </li>
+                                            }
+                                        </ul>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+
+                        <div class="section-form">
+                            <div class="section-label">
+                                <h4>Report notification</h4>
+                                <hr />
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <div class="form-observations">
+                                            <i class="bi bi-info-circle-fill"></i>
+                                            <p>The notification fields are auto filled by default. You can edit them as needed. If no changes are made, the default message and recipients will be used.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="row email-boxes">
+                                        <div class="form-group col-md-6">
+                                            <label class="control-label"> Available Staff</label> <button type="button" id="btnRight" class="btn btn-sm">
+                                                <i class="bi bi-plus-lg"></i>
+                                            </button>
+                                            @Html.ListBox("selectedOptions", (MultiSelectList)ViewBag.selOpts, new { @size = 10, @class = "form-control", @style = "margin-top: 0.5rem;" })
+                                        </div>
+
+                                        <div class="form-group col-md-6">
+                                            <label class="control-label"> Staff Selected</label> <button type="button" id="btnLeft" class="btn btn-sm">
+                                                <i class="bi bi-x-lg"></i>
+                                            </button>
+                                            @Html.ListBox("availOptions", (MultiSelectList)ViewBag.availOpts, new { @size = 10, @class = "form-control", @style = "margin-top: 0.5rem;" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="text-danger">@ViewData["Message"]</div>
+                                    <div class="form-group">
+                                        <label for="Subject" class="control-label">Email Subject</label>
+                                        <input type="text" id="Subject" name="Subject" class="form-control" value="NCR @Model.NCRNum, @Model.Phase section completed" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="emailContent" class="control-label">Message Content</label>
+                                        <textarea id="emailContent" name="emailContent" rows="5" cols="40" class="form-control">
+    Hello All,
+
+    I have completed the @Model.Phase section.
+
+    Regards
+                                            </textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <input type="submit" value="Submit" class="btn btn-primary" />
+                            <input type="submit" name="draft" value="Save draft" class="btn btn-primary" />
+                            <input asp-for="IsNCRDraft" class="form-control" hidden />
+                        </div>
+                    }
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="accordion-item">
+        <h2 class="accordion-header" id="panelsStayOpen-headingThree">
+            <button class="accordion-button collapsed" id="Operations-Section" type="button" data-bs-toggle="collapse" data-bs-target="#OperationsForm" aria-expanded="false" aria-controls="OperationsForm">
+                <i class="bi bi-receipt"></i>Operations
+            </button>
+        </h2>
+        <div id="OperationsForm" class="accordion-collapse collapse" aria-labelledby="Operations-Section">
+            <div class="accordion-body">
+
+                <form asp-action="CreateOperations" method="post" enctype="multipart/form-data">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    @Html.AntiForgeryToken()
+
+                    <div class="section-form">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label asp-for="Operations.PrelDecisionID" class="control-label"></label><span> (required)</span>
+                                    <select asp-for="Operations.PrelDecisionID" class="form-select" asp-items="ViewBag.PrelDecisionID" data-val="disabled">
+                                        <option value="">Select a PrelDecision</option>
+                                    </select>
+                                    <span asp-validation-for="Operations.PrelDecisionID" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label asp-for="Operations.CarRaised" class="custom-control-label"></label><br />
+                                    <input class="form-check-input" asp-for="Operations.CarRaised" id="carRaisedCheckbox" data-val="disabled" />
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label asp-for="Operations.IsFollowUpReq" class="custom-control-label"></label><br />
+                                    <input class="form-check-input" asp-for="Operations.IsFollowUpReq" id="followUpReqCheckbox" data-val="disabled" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label asp-for="Operations.CarNum" class="control-label"></label>
+                                    <input asp-for="Operations.CarNum" class="form-control" id="carNumField" oninput="this.value = Math.abs(this.value)" data-val="disabled" />
+                                    <span asp-validation-for="Operations.CarNum" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label asp-for="Operations.ExpecDate" class="control-label"></label>
+                                    <input asp-for="Operations.ExpecDate" class="form-control" id="followUpTypeFieldTwo" data-val="disabled" />
+                                    <span asp-validation-for="Operations.ExpecDate" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label asp-for="Operations.FollowUpType" class="control-label"></label>
+                                    <input asp-for="Operations.FollowUpType" class="form-control" id="followUpTypeField" data-val="disabled" />
+                                    <span asp-validation-for="Operations.FollowUpType" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label asp-for="Operations.OpManagerSign" class="control-label"></label><span> (required)</span>
+                                    <input asp-for="Operations.OpManagerSign" class="form-control" data-val="disabled" />
+                                    <span asp-validation-for="Operations.OpManagerSign" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label asp-for="Operations.OperationsDate" class="control-label"></label><span> (required)</span>
+                                    <input asp-for="Operations.OperationsDate" class="form-control" id="operationsDate" readonly data-val="disabled" />
+                                    <span asp-validation-for="Operations.OperationsDate" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row section-form">
+                        <div class="section-label">
+                            <h4>Report Notes</h4>
+                            <hr />
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label asp-for="Operations.Message" class="control-label"></label>
+                                <textarea asp-for="Operations.Message" rows="5" class="form-control" data-val="disabled"></textarea>
+                                <span asp-validation-for="Operations.Message" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    @if ((Model.Phase != null && Model.Operations != null) && (Model.IsNCRDraft == false && ((Model.Operations.QualityPhotos?.Any() ?? false) || (Model.Operations.VideoLinks?.Any() ?? false))))
+                    {
+
+                        <div class="section-form multimedia">
+                            @if (Model.Operations.QualityPhotos.Any() || Model.Operations.VideoLinks.Any())
+                            {
+                                <div class="section-label">
+                                    <h4>Multimedia</h4>
+                                    <hr />
+                                </div>
+                            }
+                            @if (Model.Operations.QualityPhotos.Any())
+                            {
+                                <p class="control-label">Images</p>
+                                <div class="form-group details-images">
+                                    @foreach (var image in Model.Operations.QualityPhotos)
+                                    {
+                                        string imageBase64 = Convert.ToBase64String(image.Content);
+                                        string imageSrc = string.Format("data:" + image.MimeType + ";base64,{0}", imageBase64);
+                                        <div class="card editor" style="width: 14rem;">
+                                            <img src="@imageSrc" alt="Customer Image" title="Customer Image" class="img-fluid rounded" />
+
+                                        </div>
+                                    }
+                                </div>
+                            }
+                            @if (Model.Operations.VideoLinks != null && Model.Operations.VideoLinks.Any())
+                            {
+                                <div class="form-group details-links">
+                                    <p class="control-label">Video links</p>
+                                    <ul>
+                                        @foreach (var link in Model.Operations.VideoLinks)
+                                        {
+                                            <li>
+                                                <a href="@link.Link" target="_blank">@link.Link</a>
+                                            </li>
+                                        }
+                                    </ul>
+                                </div>
+                            }
+                        </div>
+                    }
+
+                    @if (Model.Phase == "Operations" || Model.Phase == null)
+                    {
+                        <div class="row section-form">
+                            <div class="section-label">
+                                <h4>Multimedia</h4>
+                                <hr />
+                            </div>
+                            <div class="col-md-12 uploader">
+                                <label class="control-label">Images, screenshots, drawings</label>
+                                <div class="form-group images-upload-container">
+                                    <div class="upload-button-container">
+                                        <label for="formFile" class="form-label">Drop files here or click on the button below</label>
+                                        <button class="btn btn-primary">Upload</button>
+                                        <input class="form-control" type="file" id="uploadFilebtn" name="Pictures" multiple onchange="handleFileSelection(this, 'qualityrep-container')">
+                                    </div>
+                                    <input id="uploadFileArea" class="form-control" type="file" name="Pictures" multiple onchange="handleFileSelection(this, 'qualityrep-container')" />
+                                </div>
+                                <div class="form-group" id="qualityrep-container"></div>
+                            </div>
+
+                            @if (Model.Operations != null && (Model.Operations.QualityPhotos?.Any() ?? false) && Model.IsNCRDraft == true)
+                            {
+                                <div class="section-form multimedia">
+                                    <div class="form-group details-images editor">
+                                        @foreach (var image in Model.Operations.QualityPhotos)
+                                        {
+                                            string imageBase64 = Convert.ToBase64String(image.Content);
+                                            string imageSrc = string.Format("data:" + image.MimeType + ";base64,{0}", imageBase64);
+
+                                            <div class="card editor" style="width: 14rem;">
+                                                <img src="@imageSrc" alt="Image" title="Customer Image" class="card-img-top" />
+                                                <div class="card-body">
+                                                    <p>Remove Image</p>
+                                                    <input class="form-check-input" type="checkbox" id="imagesToRemove" name="imagesToRemove" value="@image.ID">
+                                                </div>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            }
+
+                            <div class="col-md-12">
+                                <div class="form-group link-adder">
+                                    <label for="Links" class="form-label">Links</label>
+                                    <div>
+                                        <input class="form-control" name="Links" type="text" id="Links" />
+                                        <button type="button" id="addLinkButton" class="btn btn-sm btn-primary" onclick="addLink('linksListContainerQuality')"><i class="bi bi-plus-lg"></i></button>
+                                    </div>
+                                </div>
+
+                                <div class="form-group" id="linksListContainerQuality"></div>
+                            </div>
+
+                            @if (Model.Operations != null && (Model.Operations.VideoLinks?.Any() ?? false) && Model.IsNCRDraft == true)
+                            {
+                                <div class="section-form multimedia">
+                                    <div class="form-group details-links editor">
+                                        <ul>
+                                            @foreach (var link in Model.Operations.VideoLinks)
+                                            {
+                                                <li>
+                                                    <a href="@link.Link" target="_blank">@link.Link</a>
+                                                    <div>
+                                                        <p>Check to remove</p>
+                                                        <input class="form-check-input" type="checkbox" id="linksToRemove" name="linksToRemove" value="@link.ID">
+                                                    </div>
+                                                </li>
+                                            }
+                                        </ul>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+
+                        <div class="section-form">
+                            <div class="section-label">
+                                <h4>Report notification</h4>
+                                <hr />
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <div class="form-observations">
+                                            <i class="bi bi-info-circle-fill"></i>
+                                            <p>The notification fields are auto filled by default. You can edit them as needed. If no changes are made, the default message and recipients will be used.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="row email-boxes">
+                                        <div class="form-group col-md-6">
+                                            <label class="control-label"> Available Staff</label> <button type="button" id="btnRight" class="btn btn-sm">
+                                                <i class="bi bi-plus-lg"></i>
+                                            </button>
+                                            @Html.ListBox("selectedOptions", (MultiSelectList)ViewBag.selOpts, new { @size = 10, @class = "form-control", @style = "margin-top: 0.5rem;" })
+                                        </div>
+
+                                        <div class="form-group col-md-6">
+                                            <label class="control-label"> Staff Selected</label> <button type="button" id="btnLeft" class="btn btn-sm">
+                                                <i class="bi bi-x-lg"></i>
+                                            </button>
+                                            @Html.ListBox("availOptions", (MultiSelectList)ViewBag.availOpts, new { @size = 10, @class = "form-control", @style = "margin-top: 0.5rem;" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="text-danger">@ViewData["Message"]</div>
+                                    <div class="form-group">
+                                        <label for="Subject" class="control-label">Email Subject</label>
+                                        <input type="text" id="Subject" name="Subject" class="form-control" value="NCR @Model.NCRNum, @Model.Phase section completed" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="emailContent" class="control-label">Message Content</label>
+                                        <textarea id="emailContent" name="emailContent" rows="5" cols="40" class="form-control">
+        Hello All,
+
+        I have completed the @Model.Phase section.
+
+        Regards
+                                                </textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <input type="submit" value="Submit" class="btn btn-primary" />
+                            <input type="submit" name="draft" value="Save draft" class="btn btn-primary" />
+                            <input asp-for="IsNCRDraft" class="form-control" hidden />
+                        </div>
+                    }
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="accordion-item">
+        <h2 class="accordion-header" id="panelsStayOpen-headingFour">
+            <button class="accordion-button collapsed" id="Procurement-Section" type="button" data-bs-toggle="collapse" data-bs-target="#ProcurementForm" aria-expanded="false" aria-controls="ProcurementForm">
+                <i class="bi bi-box-seam"></i>Procurement
+            </button>
+        </h2>
+        <div id="ProcurementForm" class="accordion-collapse collapse" aria-labelledby="Procurement-Section">
+            <div class="accordion-body">
+
+                <form asp-action="CreateProcurement" method="post" enctype="multipart/form-data">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    @Html.AntiForgeryToken()
+
+                    <div class="section-form">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group form-check">
+                                    <label class="form-check-label">
+                                        <input class="form-check-input" asp-for="Procurement.SuppItemsBack" id="suppItemsBackCheckbox" data-val="disabled" /> @Html.DisplayNameFor(model => model.Procurement.SuppItemsBack)
+                                    </label>
+                                </div>
+                                <div class="form-group form-check">
+                                    <label class="form-check-label">
+                                        <input class="form-check-input" asp-for="Procurement.SuppReturnCompleted" data-val="disabled"/> @Html.DisplayNameFor(model => model.Procurement.SuppReturnCompleted)
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group form-check">
+                                    <label class="form-check-label">
+                                        <input class="form-check-input" asp-for="Procurement.IsCreditExpec" data-val="disabled"/> @Html.DisplayNameFor(model => model.Procurement.IsCreditExpec)
+                                    </label>
+                                </div>
+                                <div class="form-group form-check">
+                                    <label class="form-check-label">
+                                        <input class="form-check-input" asp-for="Procurement.ChargeSupplier" data-val="disabled" /> @Html.DisplayNameFor(model => model.Procurement.ChargeSupplier)
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label asp-for="Procurement.RMANo" class="control-label"></label>
+                                    <input asp-for="Procurement.RMANo" class="form-control" oninput="this.value = Math.abs(this.value)" id="RMANoField" data-val="disabled" />
+                                    <span asp-validation-for="Procurement.RMANo" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label asp-for="Procurement.ExpecDateOfReturn" class="control-label"></label><span> (required)</span>
+                                    <input asp-for="Procurement.ExpecDateOfReturn" class="form-control" data-val="disabled" />
+                                    <span asp-validation-for="Procurement.ExpecDateOfReturn" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label asp-for="Procurement.ProcurementSign" class="control-label"></label><span> (required)</span>
+                                    <input asp-for="Procurement.ProcurementSign" class="form-control" data-val="disabled" />
+                                    <span asp-validation-for="Procurement.ProcurementSign" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label asp-for="Procurement.ProcurementDate" class="control-label"></label><span> (required)</span>
+                                    <input asp-for="Procurement.ProcurementDate" class="form-control" id="procurementDate" readonly data-val="disabled" />
+                                    <span asp-validation-for="Procurement.ProcurementDate" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row section-form">
+                        <div class="section-label">
+                            <h4>Report Notes</h4>
+                            <hr />
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label asp-for="Procurement.CarrierInfo" class="control-label"></label>
+                                <textarea asp-for="Procurement.CarrierInfo" rows="5" class="form-control" id="carrierInfoField" data-val="disabled"> </textarea>
+                                <span asp-validation-for="Procurement.CarrierInfo" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    @if ((Model.Phase != null && Model.Procurement != null) && (Model.IsNCRDraft == false && ((Model.Procurement.QualityPhotos?.Any() ?? false) || (Model.Procurement.VideoLinks?.Any() ?? false))))
+                    {
+
+                        <div class="section-form multimedia">
+                            @if (Model.Procurement.QualityPhotos.Any() || Model.Procurement.VideoLinks.Any())
+                            {
+                                <div class="section-label">
+                                    <h4>Multimedia</h4>
+                                    <hr />
+                                </div>
+                            }
+                            @if (Model.Procurement.QualityPhotos.Any())
+                            {
+                                <p class="control-label">Images</p>
+                                <div class="form-group details-images">
+                                    @foreach (var image in Model.Procurement.QualityPhotos)
+                                    {
+                                        string imageBase64 = Convert.ToBase64String(image.Content);
+                                        string imageSrc = string.Format("data:" + image.MimeType + ";base64,{0}", imageBase64);
+                                        <div class="card editor" style="width: 14rem;">
+                                            <img src="@imageSrc" alt="Customer Image" title="Customer Image" class="img-fluid rounded" />
+
+                                        </div>
+                                    }
+                                </div>
+                            }
+                            @if (Model.Procurement.VideoLinks != null && Model.Procurement.VideoLinks.Any())
+                            {
+                                <div class="form-group details-links">
+                                    <p class="control-label">Video links</p>
+                                    <ul>
+                                        @foreach (var link in Model.Procurement.VideoLinks)
+                                        {
+                                            <li>
+                                                <a href="@link.Link" target="_blank">@link.Link</a>
+                                            </li>
+                                        }
+                                    </ul>
+                                </div>
+                            }
+                        </div>
+                    }
+
+                    @if (Model.Phase == "Procurement" || Model.Phase == null)
+                    {
+                        <div class="row section-form">
+                            <div class="section-label">
+                                <h4>Multimedia</h4>
+                                <hr />
+                            </div>
+                            <div class="col-md-12 uploader">
+                                <label class="control-label">Images, screenshots, drawings</label>
+                                <div class="form-group images-upload-container">
+                                    <div class="upload-button-container">
+                                        <label for="formFile" class="form-label">Drop files here or click on the button below</label>
+                                        <button class="btn btn-primary">Upload</button>
+                                        <input class="form-control" type="file" id="uploadFilebtn" name="Pictures" multiple onchange="handleFileSelection(this, 'qualityrep-container')">
+                                    </div>
+                                    <input id="uploadFileArea" class="form-control" type="file" name="Pictures" multiple onchange="handleFileSelection(this, 'qualityrep-container')" />
+                                </div>
+                                <div class="form-group" id="qualityrep-container"></div>
+                            </div>
+
+                            @if (Model.Procurement != null && (Model.Procurement.QualityPhotos?.Any() ?? false) && Model.IsNCRDraft == true)
+                            {
+                                <div class="section-form multimedia">
+                                    <div class="form-group details-images editor">
+                                        @foreach (var image in Model.Procurement.QualityPhotos)
+                                        {
+                                            string imageBase64 = Convert.ToBase64String(image.Content);
+                                            string imageSrc = string.Format("data:" + image.MimeType + ";base64,{0}", imageBase64);
+
+                                            <div class="card editor" style="width: 14rem;">
+                                                <img src="@imageSrc" alt="Image" title="Customer Image" class="card-img-top" />
+                                                <div class="card-body">
+                                                    <p>Remove Image</p>
+                                                    <input class="form-check-input" type="checkbox" id="imagesToRemove" name="imagesToRemove" value="@image.ID">
+                                                </div>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            }
+
+                            <div class="col-md-12">
+                                <div class="form-group link-adder">
+                                    <label for="Links" class="form-label">Links</label>
+                                    <div>
+                                        <input class="form-control" name="Links" type="text" id="Links" />
+                                        <button type="button" id="addLinkButton" class="btn btn-sm btn-primary" onclick="addLink('linksListContainerQuality')"><i class="bi bi-plus-lg"></i></button>
+                                    </div>
+                                </div>
+
+                                <div class="form-group" id="linksListContainerQuality"></div>
+                            </div>
+
+                            @if (Model.Procurement != null && (Model.Procurement.VideoLinks?.Any() ?? false) && Model.IsNCRDraft == true)
+                            {
+                                <div class="section-form multimedia">
+                                    <div class="form-group details-links editor">
+                                        <ul>
+                                            @foreach (var link in Model.Procurement.VideoLinks)
+                                            {
+                                                <li>
+                                                    <a href="@link.Link" target="_blank">@link.Link</a>
+                                                    <div>
+                                                        <p>Check to remove</p>
+                                                        <input class="form-check-input" type="checkbox" id="linksToRemove" name="linksToRemove" value="@link.ID">
+                                                    </div>
+                                                </li>
+                                            }
+                                        </ul>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+
+                        <div class="section-form">
+                            <div class="section-label">
+                                <h4>Report notification</h4>
+                                <hr />
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <div class="form-observations">
+                                            <i class="bi bi-info-circle-fill"></i>
+                                            <p>The notification fields are auto filled by default. You can edit them as needed. If no changes are made, the default message and recipients will be used.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="row email-boxes">
+                                        <div class="form-group col-md-6">
+                                            <label class="control-label"> Available Staff</label> <button type="button" id="btnRight" class="btn btn-sm">
+                                                <i class="bi bi-plus-lg"></i>
+                                            </button>
+                                            @Html.ListBox("selectedOptions", (MultiSelectList)ViewBag.selOpts, new { @size = 10, @class = "form-control", @style = "margin-top: 0.5rem;" })
+                                        </div>
+
+                                        <div class="form-group col-md-6">
+                                            <label class="control-label"> Staff Selected</label> <button type="button" id="btnLeft" class="btn btn-sm">
+                                                <i class="bi bi-x-lg"></i>
+                                            </button>
+                                            @Html.ListBox("availOptions", (MultiSelectList)ViewBag.availOpts, new { @size = 10, @class = "form-control", @style = "margin-top: 0.5rem;" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="text-danger">@ViewData["Message"]</div>
+                                    <div class="form-group">
+                                        <label for="Subject" class="control-label">Email Subject</label>
+                                        <input type="text" id="Subject" name="Subject" class="form-control" value="NCR @Model.NCRNum, @Model.Phase section completed" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="emailContent" class="control-label">Message Content</label>
+                                        <textarea id="emailContent" name="emailContent" rows="5" cols="40" class="form-control">
+    Hello All,
+
+    I have completed the @Model.Phase section.
+
+    Regards
+                                        </textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <input type="submit" value="Submit" class="btn btn-primary" />
+                            <input type="submit" name="draft" value="Save draft" class="btn btn-primary" />
+                            <input asp-for="IsNCRDraft" class="form-control" hidden />
+                        </div>
+                    }
+
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="accordion-item">
+        <h2 class="accordion-header" id="panelsStayOpen-headingFive">
+            <button class="accordion-button collapsed" id="Reinspection-Section" type="button" data-bs-toggle="collapse" data-bs-target="#ReinspectionForm" aria-expanded="false" aria-controls="ReinspectionForm">
+                <i class="bi bi-arrow-repeat"></i>Reinspection
+            </button>
+        </h2>
+        <div id="ReinspectionForm" class="accordion-collapse collapse" aria-labelledby="Reinspection-Section">
+            <div class="accordion-body">
+                <form asp-action="CreateReinspection" method="post" enctype="multipart/form-data">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    @Html.AntiForgeryToken()
+
+                    <div class="section-form">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group form-check">
+                                    <label class="form-check-label">
+                                        <input class="form-check-input" asp-for="Reinspection.ReinspecAccepted" data-val="disabled" /> @Html.DisplayNameFor(model => model.Reinspection.ReinspecAccepted)
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label asp-for="Reinspection.ReinspecInspectorSign" class="control-label"></label><span> (required)</span>
+                                    <input asp-for="Reinspection.ReinspecInspectorSign" class="form-control" data-val="disabled" />
+                                    <span asp-validation-for="Reinspection.ReinspecInspectorSign" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label asp-for="Reinspection.ReinspectionDate" class="control-label"></label><span> (required)</span>
+                                    <input asp-for="Reinspection.ReinspectionDate" class="form-control" id="reinspectionDate" readonly data-val="disabled" />
+                                    <span asp-validation-for="Reinspection.ReinspectionDate" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    @if ((Model.Phase != null && Model.Reinspection != null) && (Model.IsNCRDraft == false && ((Model.Reinspection.QualityPhotos?.Any() ?? false) || (Model.Reinspection.VideoLinks?.Any() ?? false))))
+                    {
+
+                        <div class="section-form multimedia">
+                            @if (Model.Reinspection.QualityPhotos.Any() || Model.Reinspection.VideoLinks.Any())
+                            {
+                                <div class="section-label">
+                                    <h4>Multimedia</h4>
+                                    <hr />
+                                </div>
+                            }
+                            @if (Model.Reinspection.QualityPhotos.Any())
+                            {
+                                <p class="control-label">Images</p>
+                                <div class="form-group details-images">
+                                    @foreach (var image in Model.Reinspection.QualityPhotos)
+                                    {
+                                        string imageBase64 = Convert.ToBase64String(image.Content);
+                                        string imageSrc = string.Format("data:" + image.MimeType + ";base64,{0}", imageBase64);
+                                        <div class="card editor" style="width: 14rem;">
+                                            <img src="@imageSrc" alt="Customer Image" title="Customer Image" class="img-fluid rounded" />
+
+                                        </div>
+                                    }
+                                </div>
+                            }
+                            @if (Model.Reinspection.VideoLinks != null && Model.Reinspection.VideoLinks.Any())
+                            {
+                                <div class="form-group details-links">
+                                    <p class="control-label">Video links</p>
+                                    <ul>
+                                        @foreach (var link in Model.Reinspection.VideoLinks)
+                                        {
+                                            <li>
+                                                <a href="@link.Link" target="_blank">@link.Link</a>
+                                            </li>
+                                        }
+                                    </ul>
+                                </div>
+                            }
+                        </div>
+                    }
+
+                    @if (Model.Phase == "Reinspection" || Model.Phase == null)
+                    {
+                        <div class="row section-form">
+                            <div class="section-label">
+                                <h4>Multimedia</h4>
+                                <hr />
+                            </div>
+                            <div class="col-md-12 uploader">
+                                <label class="control-label">Images, screenshots, drawings</label>
+                                <div class="form-group images-upload-container">
+                                    <div class="upload-button-container">
+                                        <label for="formFile" class="form-label">Drop files here or click on the button below</label>
+                                        <button class="btn btn-primary">Upload</button>
+                                        <input class="form-control" type="file" id="uploadFilebtn" name="Pictures" multiple onchange="handleFileSelection(this, 'qualityrep-container')">
+                                    </div>
+                                    <input id="uploadFileArea" class="form-control" type="file" name="Pictures" multiple onchange="handleFileSelection(this, 'qualityrep-container')" />
+                                </div>
+                                <div class="form-group" id="qualityrep-container"></div>
+                            </div>
+
+                            @if (Model.Reinspection != null && (Model.Reinspection.QualityPhotos?.Any() ?? false) && Model.IsNCRDraft == true)
+                            {
+                                <div class="section-form multimedia">
+                                    <div class="form-group details-images editor">
+                                        @foreach (var image in Model.Reinspection.QualityPhotos)
+                                        {
+                                            string imageBase64 = Convert.ToBase64String(image.Content);
+                                            string imageSrc = string.Format("data:" + image.MimeType + ";base64,{0}", imageBase64);
+
+                                            <div class="card editor" style="width: 14rem;">
+                                                <img src="@imageSrc" alt="Image" title="Customer Image" class="card-img-top" />
+                                                <div class="card-body">
+                                                    <p>Remove Image</p>
+                                                    <input class="form-check-input" type="checkbox" id="imagesToRemove" name="imagesToRemove" value="@image.ID">
+                                                </div>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            }
+
+                            <div class="col-md-12">
+                                <div class="form-group link-adder">
+                                    <label for="Links" class="form-label">Links</label>
+                                    <div>
+                                        <input class="form-control" name="Links" type="text" id="Links" />
+                                        <button type="button" id="addLinkButton" class="btn btn-sm btn-primary" onclick="addLink('linksListContainerQuality')"><i class="bi bi-plus-lg"></i></button>
+                                    </div>
+                                </div>
+
+                                <div class="form-group" id="linksListContainerQuality"></div>
+                            </div>
+
+                            @if (Model.Reinspection != null && (Model.Reinspection.VideoLinks?.Any() ?? false) && Model.IsNCRDraft == true)
+                            {
+                                <div class="section-form multimedia">
+                                    <div class="form-group details-links editor">
+                                        <ul>
+                                            @foreach (var link in Model.Reinspection.VideoLinks)
+                                            {
+                                                <li>
+                                                    <a href="@link.Link" target="_blank">@link.Link</a>
+                                                    <div>
+                                                        <p>Check to remove</p>
+                                                        <input class="form-check-input" type="checkbox" id="linksToRemove" name="linksToRemove" value="@link.ID">
+                                                    </div>
+                                                </li>
+                                            }
+                                        </ul>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+
+                        <div class="section-form">
+                            <div class="section-label">
+                                <h4>Report notification</h4>
+                                <hr />
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <div class="form-observations">
+                                            <i class="bi bi-info-circle-fill"></i>
+                                            <p>The notification fields are auto filled by default. You can edit them as needed. If no changes are made, the default message and recipients will be used.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="row email-boxes">
+                                        <div class="form-group col-md-6">
+                                            <label class="control-label"> Available Staff</label> <button type="button" id="btnRight" class="btn btn-sm">
+                                                <i class="bi bi-plus-lg"></i>
+                                            </button>
+                                            @Html.ListBox("selectedOptions", (MultiSelectList)ViewBag.selOpts, new { @size = 10, @class = "form-control", @style = "margin-top: 0.5rem;" })
+                                        </div>
+
+                                        <div class="form-group col-md-6">
+                                            <label class="control-label"> Staff Selected</label> <button type="button" id="btnLeft" class="btn btn-sm">
+                                                <i class="bi bi-x-lg"></i>
+                                            </button>
+                                            @Html.ListBox("availOptions", (MultiSelectList)ViewBag.availOpts, new { @size = 10, @class = "form-control", @style = "margin-top: 0.5rem;" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="text-danger">@ViewData["Message"]</div>
+                                    <div class="form-group">
+                                        <label for="Subject" class="control-label">Email Subject</label>
+                                        <input type="text" id="Subject" name="Subject" class="form-control" value="NCR @Model.NCRNum, @Model.Phase section completed" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="emailContent" class="control-label">Message Content</label>
+                                        <textarea id="emailContent" name="emailContent" rows="5" cols="40" class="form-control">
+            Hello All,
+
+            I have completed the @Model.Phase section.
+
+            Regards
+                                                    </textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <input type="submit" value="Submit" class="btn btn-primary" />
+                            <input type="submit" name="draft" value="Save draft" class="btn btn-primary" />
+                            <input asp-for="IsNCRDraft" class="form-control" hidden />
+                        </div>
+                    }
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="~/js/photos-adder.js"></script>
+    <script src="~/js/form-fill.js"></script>
+    <script src="~/js/form-dates-filler.js"></script>
+    <script src="~/js/block-fields.js"></script>
+    <script src="~/js/refreshDDL.js"></script>
+    <script src="~/js/video-link.js"></script>
+
+    <script>
+
+        //First Lookup value adder
+        $('#submitPartCreate').click(function (event) {
+            event.preventDefault();
+            ClearErrors();
+            var form = $('#createPartForm');
+
+            $.ajax({
+                type: "POST",
+                url: form.attr('action'),
+                data: form.serialize(),
+                success: function () {
+                    $('#addPartModal').modal('hide');
+                },
+                error: function (xhr) { //Note: xhr is the XMLHttpRequest
+                    var errorMessages = [];
+                    switch (xhr.status) {
+                        case 401:
+                            errorMessages.push("You must be logged in first.");
+                            break;
+                        case 403:
+                            errorMessages.push("You are not authorized for this action.");
+                            break;
+                        default:
+                            //Messages coming from the Model State Errors
+                            //We split on the | delimeter and the .slice removes the last one
+                            errorMessages = xhr.responseText.split("|").slice(0, -1);
+                    }
+                    //This checks if there are any elements with some content
+                    //and if not then it provides a default feedback message.
+                    if (!errorMessages.some((str) => str !== "")) {
+                        errorMessages.push("Error: Unable to complete operation");
+                    }
+                    //Put the messages in the ErrorList ul contained in the 'ValidaitonSummary' div.
+                    var ul = document.getElementById("ErrorList");
+                    for (var i = 0; i < errorMessages.length; i++) {
+                        var errorMessage = errorMessages[i];
+                        var li = document.createElement("li");
+                        li.innerHTML = errorMessage;
+                        ul.appendChild(li);
+                    }
+                }
+            });
+            // if (form.valid()) {
+            // }
+            return false;
+        });
+
+        $('#addPartModal').on('hide.bs.modal', function () {
+            document.getElementById("createPartForm").reset();//to clear the data in the popup form
+            ClearErrors();
+            var selectedOption = $('#PartID').val();//Return to the current selected value
+            refreshDDL('PartID', '/NCR/GetParts/' + selectedOption, false, null, true, 'None', true);
+        });
+
+        //Second Lookup value adder
+        $('#submitProblemCreate').click(function (event) {
+            event.preventDefault();
+            ClearErrors();
+            var form = $('#createProblemForm');
+
+            $.ajax({
+                type: "POST",
+                url: form.attr('action'),
+                data: form.serialize(),
+                success: function () {
+                    $('#addProblemModal').modal('hide');
+                },
+                error: function (xhr) { //Note: xhr is the XMLHttpRequest
+                    var errorMessages = [];
+                    switch (xhr.status) {
+                        case 401:
+                            errorMessages.push("You must be logged in first.");
+                            break;
+                        case 403:
+                            errorMessages.push("You are not authorized for this action.");
+                            break;
+                        default:
+                            //Messages coming from the Model State Errors
+                            //We split on the | delimeter and the .slice removes the last one
+                            errorMessages = xhr.responseText.split("|").slice(0, -1);
+                    }
+                    //This checks if there are any elements with some content
+                    //and if not then it provides a default feedback message.
+                    if (!errorMessages.some((str) => str !== "")) {
+                        errorMessages.push("Error: Unable to complete operation");
+                    }
+                    //Put the messages in the ErrorList ul contained in the 'ValidaitonSummary' div.
+                    var ul = document.getElementById("ErrorList");
+                    for (var i = 0; i < errorMessages.length; i++) {
+                        var errorMessage = errorMessages[i];
+                        var li = document.createElement("li");
+                        li.innerHTML = errorMessage;
+                        ul.appendChild(li);
+                    }
+                }
+            });
+            // if (form.valid()) {
+            // }
+            return false;
+        });
+
+        $('#addProblemModal').on('hide.bs.modal', function () {
+            document.getElementById("createProblemForm").reset();//to clear the data in the popup form
+            ClearErrors();
+            var selectedOption = $('#ProblemID').val();//Return to the current selected value
+            refreshDDL('ProblemID', '/NCR/GetProblems/' + selectedOption, false, null, true, 'None', true);
+        });
+
+
+        //Third Lookup value adder
+        $('#submitSupplierCreate').click(function (event) {
+            event.preventDefault();
+            ClearErrors();
+            var form = $('#createSupplierForm');
+
+            $.ajax({
+                type: "POST",
+                url: form.attr('action'),
+                data: form.serialize(),
+                success: function () {
+                    $('#addSupplierModal').modal('hide');
+                },
+                error: function (xhr) { //Note: xhr is the XMLHttpRequest
+                    var errorMessages = [];
+                    switch (xhr.status) {
+                        case 401:
+                            errorMessages.push("You must be logged in first.");
+                            break;
+                        case 403:
+                            errorMessages.push("You are not authorized for this action.");
+                            break;
+                        default:
+                            //Messages coming from the Model State Errors
+                            //We split on the | delimeter and the .slice removes the last one
+                            errorMessages = xhr.responseText.split("|").slice(0, -1);
+                    }
+                    //This checks if there are any elements with some content
+                    //and if not then it provides a default feedback message.
+                    if (!errorMessages.some((str) => str !== "")) {
+                        errorMessages.push("Error: Unable to complete operation");
+                    }
+                    //Put the messages in the ErrorList ul contained in the 'ValidaitonSummary' div.
+                    var ul = document.getElementById("ErrorList");
+                    for (var i = 0; i < errorMessages.length; i++) {
+                        var errorMessage = errorMessages[i];
+                        var li = document.createElement("li");
+                        li.innerHTML = errorMessage;
+                        ul.appendChild(li);
+                    }
+                }
+            });
+            // if (form.valid()) {
+            // }
+            return false;
+        });
+
+        $('#addSupplierModal').on('hide.bs.modal', function () {
+            document.getElementById("createSupplierForm").reset();//to clear the data in the popup form
+            ClearErrors();
+            var selectedOption = $('#SupplierID').val();//Return to the current selected value
+            refreshDDL('SupplierID', '/NCR/GetSuppliers/' + selectedOption, false, null, true, 'None', true);
+        });
+
+        function ClearErrors() {
+            //Empty out the list of validation errors if there are any
+            var ul = document.getElementById("ErrorList");
+            while (ul.firstChild) {
+                ul.removeChild(ul.firstChild);
+            }
+        }
+
+
+        // Helper method to unfold sections
+        function toggleAccordion(sectionId, sectionButtonId, section) {
+            const formControls = document.querySelectorAll('.form-control, .form-check-input, .form-select')
+
+            $(sectionId).addClass('show');
+            $(sectionButtonId).removeClass('collapsed')
+
+            //Block all the fields that do not belong to the current section
+            for(let item of formControls){
+                let parentDiv = item.closest('.accordion-collapse');
+
+                if (parentDiv.id != section) {
+                    item.disabled = true;
+                }
+            }
+        }
+
+        // Unfold section according to NCR Phase
+        $(document).ready(function () {
+
+            var currentSection = '@Model.Phase';
+
+            if (currentSection === "Quality Representative" || currentSection === "") {
+                toggleAccordion('#QualityForm', '#Quality-Section', 'QualityForm');
+            } else if (currentSection === "Engineering") {
+                toggleAccordion('#EngineerForm', '#Engineering-Section', 'EngineerForm');
+            } else if (currentSection === "Operations") {
+                toggleAccordion('#OperationsForm', '#Operations-Section', 'OperationsForm');
+            } else if (currentSection === "Procurement") {
+                toggleAccordion('#ProcurementForm', '#Procurement-Section', 'ProcurementForm');
+            } else if (currentSection === "Reinspection") {
+                toggleAccordion('#ReinspectionForm', '#Reinspection-Section', 'ReinspectionForm');
+            }
+        });
+
+        //Email multiselect
+
+        let DDLforChosen = document.getElementById("selectedOptions");
+        let DDLforAvail = document.getElementById("availOptions");
+
+        /*function to switch list items from one ddl to another
+        use the sender param for the DDL from which the user is multi-selecting
+        use the receiver param for the DDL that gets the options*/
+        function switchOptions(event, senderDDL, receiverDDL) {
+            //find all selected option tags - selectedOptions becomes a nodelist
+            let senderID = senderDDL.id;
+            let selectedOptions = document.querySelectorAll(`#${senderID} option:checked`);
+            event.preventDefault();
+
+            if (selectedOptions.length === 0) {
+                alert("Nothing to move.");
+            }
+            else {
+                selectedOptions.forEach(function (o, idx) {
+                    senderDDL.remove(o.index);
+                    receiverDDL.appendChild(o);
+                });
+            }
+        }
+
+        //create closures so that we can access the event & the 2 parameters
+        let addOptions = (event) => switchOptions(event, DDLforAvail, DDLforChosen);
+        let removeOptions = (event) => switchOptions(event, DDLforChosen, DDLforAvail);
+
+        //assign the closures as the event handlers for each button
+        document.getElementById("btnLeft").addEventListener("click", addOptions);
+        document.getElementById("btnRight").addEventListener("click", removeOptions);
+
+        document.getElementById("btnSubmit").addEventListener("click", function () {
+            DDLforChosen.childNodes.forEach(opt => opt.selected = "selected");
+        })
+
+        // function switchAllOptions(senderDDL, receiverDDL) {
+        //     // Find all options in senderDDL
+        //     let senderID = senderDDL.id;
+        //     let selectedOptions = document.querySelectorAll(`#${senderID} option`);
+        //     var btnLeft = document.getElementById("btnLeft");
+
+        //     selectedOptions.forEach(function (o, idx) {
+        //         o.selected = true;
+        //         btnLeft.click(); //Trigger a click event on the button
+        //     });
+        // }
+
+        // switchAllOptions(DDLforAvail, DDLforChosen);
+
+        $(document).ready(function () {
+            // Get today's date
+            var today = new Date();
+
+            // Format date as YYYY-MM-DD (assuming your date input expects this format)
+            var formattedDate = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
+
+            // Set the value of the date input field
+            $('#qualityRepDate').val(formattedDate);
+        });
+
+
+        // Get the images
+        var images = document.querySelectorAll(".img-fluid");
+
+        images.forEach(function (image) {
+
+            //Get the image clicked
+            image.onclick = function () {
+                let imageRow = image.closest(".row");
+
+                image.classList.toggle("expanded");
+                imageRow.classList.toggle("image-modal");
+                imageRow.style.display = "flex";
+
+                //Toggle id
+                if (image.id === "clickedImage") {
+                    image.removeAttribute("id");
+                } else {
+                    image.id = "clickedImage";
+                }
+
+                // Hide images other than the clicked one
+                images.forEach(function (otherImage) {
+                    if (otherImage !== image) {
+                        otherImage.classList.toggle("hide-other-imgs")
+                    }
+                });
+            }
+        });
+
+        
+
+    </script>
+
+}
